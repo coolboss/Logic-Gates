@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Logic Gates Learning Lab</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --ink: #1d2533;
+      --muted: #667085;
+      --line: #d8dee9;
+      --accent: #3858e9;
+      --accent2: #0f9f6e;
+      --danger: #d92d20;
+      --soft: #eef2ff;
+      --good: #ecfdf3;
+      --bad: #fef3f2;
+      --shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, #182848, #3858e9);
+      color: white;
+      padding: 42px 18px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0 0 10px;
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      line-height: 1.05;
+    }
+
+    header p {
+      max-width: 850px;
+      margin: 0 auto;
+      font-size: 1.1rem;
+      opacity: 0.95;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--line);
+      padding: 10px 12px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    nav a {
+      color: var(--ink);
+      text-decoration: none;
+      padding: 9px 13px;
+      border-radius: 999px;
+      display: inline-block;
+      font-weight: 650;
+      font-size: 0.95rem;
+    }
+
+    nav a:hover { background: var(--soft); color: var(--accent); }
+
+    main {
+      width: min(1120px, calc(100% - 28px));
+      margin: 24px auto 60px;
+    }
+
+    section {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      margin: 22px 0;
+      padding: clamp(18px, 4vw, 34px);
+    }
+
+    h2 { font-size: clamp(1.5rem, 3vw, 2.25rem); margin: 0 0 12px; }
+    h3 { margin-top: 28px; font-size: 1.3rem; }
+    .lead { color: var(--muted); font-size: 1.06rem; }
+    .grid { display: grid; gap: 18px; }
+    .two { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    .three { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+
+    .mini-card {
+      background: #fbfcff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .memory-line {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--accent);
+      padding: 16px 18px;
+      background: var(--soft);
+      border-radius: 18px;
+      margin: 18px 0;
+    }
+
+    .pill {
+      display: inline-block;
+      background: var(--soft);
+      color: var(--accent);
+      font-weight: 800;
+      padding: 5px 10px;
+      border-radius: 999px;
+      margin-right: 6px;
+    }
+
+    button {
+      border: 0;
+      background: var(--accent);
+      color: white;
+      padding: 10px 15px;
+      border-radius: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 6px 14px rgba(56, 88, 233, 0.2);
+    }
+
+    button.secondary { background: #344054; }
+    button.good { background: var(--accent2); }
+    button.danger { background: var(--danger); }
+    button.ghost {
+      background: white;
+      color: var(--ink);
+      border: 1px solid var(--line);
+      box-shadow: none;
+    }
+    button:hover { filter: brightness(0.97); }
+
+    .bit-btn {
+      width: 72px;
+      height: 72px;
+      font-size: 1.7rem;
+      border-radius: 22px;
+    }
+
+    .bit-off { background: #475467; }
+    .bit-on { background: var(--accent2); }
+
+    .lab-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      padding: 18px;
+      background: #fbfcff;
+      border: 1px dashed var(--line);
+      border-radius: 22px;
+    }
+
+    select, input[type="number"] {
+      padding: 11px 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font-size: 1rem;
+      background: white;
+    }
+
+    .output-box {
+      min-width: 90px;
+      text-align: center;
+      padding: 16px;
+      border-radius: 18px;
+      font-size: 2rem;
+      font-weight: 900;
+      color: white;
+    }
+
+    .output-0 { background: #475467; }
+    .output-1 { background: var(--accent2); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 16px;
+      margin-top: 12px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: center;
+    }
+
+    th { background: #f2f4f7; }
+    tr:last-child td { border-bottom: 0; }
+
+    .highlight { background: #fff7cc; font-weight: 900; }
+
+    .gate-symbol {
+      width: 180px;
+      height: 110px;
+      display: block;
+      margin: 10px auto;
+    }
+
+    .equation {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      background: #101828;
+      color: #f9fafb;
+      border-radius: 16px;
+      padding: 14px;
+      overflow-x: auto;
+      font-size: 1rem;
+    }
+
+    .quiz-item {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 16px;
+      margin: 14px 0;
+      background: #fbfcff;
+    }
+
+    .answers {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .feedback {
+      margin-top: 10px;
+      font-weight: 800;
+    }
+
+    .correct { color: var(--accent2); }
+    .wrong { color: var(--danger); }
+
+    .footer-note {
+      color: var(--muted);
+      text-align: center;
+      margin-top: 32px;
+    }
+
+    .truth-wrap { overflow-x: auto; }
+
+    @media print {
+      nav, button { display: none !important; }
+      body { background: white; }
+      section { box-shadow: none; break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Logic Gates Learning Lab</h1>
+    <p>A small browser app to understand AND, OR, NOT, NAND, NOR, XOR and XNOR with interactive examples, truth tables, memory hooks and quizzes.</p>
+  </header>
+
+  <nav>
+    <a href="#basics">Basics</a>
+    <a href="#andor">AND and OR</a>
+    <a href="#not">NOT</a>
+    <a href="#nand">NAND</a>
+    <a href="#other">NOR, XOR, XNOR</a>
+    <a href="#lab">Interactive Lab</a>
+    <a href="#adder">Adder Preview</a>
+    <a href="#quiz">Quiz</a>
+  </nav>
+
+  <main>
+    <section id="basics">
+      <h2>1. The whole idea in one sentence</h2>
+      <p class="lead">A logic gate is a tiny rule machine. It receives 0s and 1s and gives one output: either 0 or 1.</p>
+      <div class="memory-line">0 means OFF / NO / FALSE. 1 means ON / YES / TRUE.</div>
+      <div class="grid three">
+        <div class="mini-card"><span class="pill">Bit</span><p>One small unit of information. It can only be 0 or 1.</p></div>
+        <div class="mini-card"><span class="pill">Gate</span><p>A rule applied to bits. Example: both must be true.</p></div>
+        <div class="mini-card"><span class="pill">Circuit</span><p>Many gates connected together. This becomes arithmetic, memory and the CPU.</p></div>
+      </div>
+    </section>
+
+    <section id="andor">
+      <h2>2. AND and OR</h2>
+      <p class="lead">These two are the first gates to master.</p>
+      <div class="grid two">
+        <div class="mini-card">
+          <h3>AND gate</h3>
+          <svg class="gate-symbol" viewBox="0 0 220 130">
+            <line x1="10" y1="40" x2="70" y2="40" stroke="#1d2533" stroke-width="5"/>
+            <line x1="10" y1="90" x2="70" y2="90" stroke="#1d2533" stroke-width="5"/>
+            <path d="M70 20 L120 20 A45 45 0 0 1 120 110 L70 110 Z" fill="#eef2ff" stroke="#3858e9" stroke-width="5"/>
+            <line x1="165" y1="65" x2="210" y2="65" stroke="#1d2533" stroke-width="5"/>
+            <text x="88" y="72" font-size="24" font-weight="900" fill="#3858e9">AND</text>
+          </svg>
+          <p><b>Memory hook:</b> AND is strict. Both inputs must be 1.</p>
+          <div class="truth-wrap"><table id="andTable"></table></div>
+        </div>
+        <div class="mini-card">
+          <h3>OR gate</h3>
+          <svg class="gate-symbol" viewBox="0 0 220 130">
+            <line x1="10" y1="40" x2="70" y2="40" stroke="#1d2533" stroke-width="5"/>
+            <line x1="10" y1="90" x2="70" y2="90" stroke="#1d2533" stroke-width="5"/>
+            <path d="M62 20 C98 30, 122 30, 170 65 C122 100, 98 100, 62 110 C78 80, 78 50, 62 20 Z" fill="#ecfdf3" stroke="#0f9f6e" stroke-width="5"/>
+            <line x1="170" y1="65" x2="210" y2="65" stroke="#1d2533" stroke-width="5"/>
+            <text x="98" y="72" font-size="24" font-weight="900" fill="#0f9f6e">OR</text>
+          </svg>
+          <p><b>Memory hook:</b> OR is generous. Any one input is enough.</p>
+          <div class="truth-wrap"><table id="orTable"></table></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="not">
+      <h2>3. NOT gate</h2>
+      <p class="lead">NOT is the simplest gate. It flips the input.</p>
+      <div class="grid two">
+        <div class="mini-card">
+          <svg class="gate-symbol" viewBox="0 0 220 130">
+            <line x1="10" y1="65" x2="65" y2="65" stroke="#1d2533" stroke-width="5"/>
+            <path d="M65 25 L65 105 L145 65 Z" fill="#fff7cc" stroke="#d98c00" stroke-width="5"/>
+            <circle cx="157" cy="65" r="11" fill="white" stroke="#d98c00" stroke-width="5"/>
+            <line x1="168" y1="65" x2="210" y2="65" stroke="#1d2533" stroke-width="5"/>
+            <text x="80" y="72" font-size="22" font-weight="900" fill="#d98c00">NOT</text>
+          </svg>
+        </div>
+        <div class="mini-card">
+          <table id="notTable"></table>
+          <p><b>Memory hook:</b> NOT means opposite.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="nand">
+      <h2>4. NAND in detail</h2>
+      <p class="lead">NAND means NOT AND. First do AND. Then reverse the answer.</p>
+      <div class="memory-line">NAND says: everything is 1 except the perfect AND case.</div>
+      <div class="grid two">
+        <div class="mini-card">
+          <h3>Truth table</h3>
+          <div class="truth-wrap"><table id="nandTable"></table></div>
+        </div>
+        <div class="mini-card">
+          <h3>Why NAND is special</h3>
+          <p>You can build NOT, AND and OR using only NAND. That means NAND alone can build an entire computer.</p>
+          <div class="equation">NOT A = A NAND A<br>AND = NOT(A NAND B)<br>OR = (NOT A) NAND (NOT B)</div>
+        </div>
+      </div>
+
+      <h3>Build other gates from NAND</h3>
+      <div class="grid three">
+        <div class="mini-card">
+          <h3>NOT from NAND</h3>
+          <p>Feed the same input into both NAND inputs.</p>
+          <div class="equation">A NAND A = NOT A</div>
+        </div>
+        <div class="mini-card">
+          <h3>AND from NAND</h3>
+          <p>NAND gives the opposite of AND. Reverse it again.</p>
+          <div class="equation">A AND B = (A NAND B) NAND (A NAND B)</div>
+        </div>
+        <div class="mini-card">
+          <h3>OR from NAND</h3>
+          <p>Invert both inputs first. Then NAND them.</p>
+          <div class="equation">A OR B = (A NAND A) NAND (B NAND B)</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="other">
+      <h2>5. Are NOR, XOR and XNOR required?</h2>
+      <p class="lead">You do not need to master all of them at the beginning, but you should recognize them.</p>
+      <div class="grid three">
+        <div class="mini-card">
+          <h3>NOR</h3>
+          <p>NOR means NOT OR. Output is 1 only when both inputs are 0.</p>
+          <p><b>Memory hook:</b> NOR is extremely strict about silence.</p>
+        </div>
+        <div class="mini-card">
+          <h3>XOR</h3>
+          <p>XOR asks: are the two inputs different?</p>
+          <p><b>Memory hook:</b> XOR means either one, but not both.</p>
+        </div>
+        <div class="mini-card">
+          <h3>XNOR</h3>
+          <p>XNOR asks: are the two inputs same?</p>
+          <p><b>Memory hook:</b> XNOR means agreement detector.</p>
+        </div>
+      </div>
+      <div class="truth-wrap"><table id="allTable"></table></div>
+    </section>
+
+    <section id="lab">
+      <h2>6. Interactive gate lab</h2>
+      <p class="lead">Toggle A and B. Change the gate. Watch the result and truth table row.</p>
+      <div class="lab-row">
+        <div>
+          <p><b>Input A</b></p>
+          <button id="btnA" class="bit-btn bit-off" onclick="toggleBit('A')">0</button>
+        </div>
+        <div>
+          <p><b>Gate</b></p>
+          <select id="gateSelect" onchange="updateLab()">
+            <option value="AND">AND</option>
+            <option value="OR">OR</option>
+            <option value="NOT_A">NOT A</option>
+            <option value="NAND">NAND</option>
+            <option value="NOR">NOR</option>
+            <option value="XOR">XOR</option>
+            <option value="XNOR">XNOR</option>
+          </select>
+        </div>
+        <div>
+          <p><b>Input B</b></p>
+          <button id="btnB" class="bit-btn bit-off" onclick="toggleBit('B')">0</button>
+        </div>
+        <div>
+          <p><b>Output</b></p>
+          <div id="labOut" class="output-box output-0">0</div>
+        </div>
+      </div>
+      <div class="mini-card" style="margin-top:18px;">
+        <h3>Explanation</h3>
+        <p id="labExplanation"></p>
+      </div>
+    </section>
+
+    <section id="adder">
+      <h2>7. Preview: how gates create addition and carry</h2>
+      <p class="lead">This is where logic gates start looking like a real computer.</p>
+      <div class="grid two">
+        <div class="mini-card">
+          <h3>Half adder</h3>
+          <p>To add two bits A and B:</p>
+          <div class="equation">SUM = A XOR B<br>CARRY = A AND B</div>
+          <p>Why? If both are 1, the sum position becomes 0 and carry becomes 1.</p>
+        </div>
+        <div class="mini-card">
+          <h3>Try one bit addition</h3>
+          <div class="lab-row">
+            <button id="addA" class="bit-btn bit-off" onclick="toggleAdder('A')">0</button>
+            <span style="font-size:2rem;font-weight:900;">+</span>
+            <button id="addB" class="bit-btn bit-off" onclick="toggleAdder('B')">0</button>
+            <span style="font-size:2rem;font-weight:900;">=</span>
+            <div><b>Carry</b><div id="carryOut" class="output-box output-0">0</div></div>
+            <div><b>Sum</b><div id="sumOut" class="output-box output-0">0</div></div>
+          </div>
+          <p id="adderExplanation"></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="quiz">
+      <h2>8. Quiz</h2>
+      <p class="lead">Answer these. The app will check instantly.</p>
+      <div id="quizBox"></div>
+      <button class="good" onclick="scoreQuiz()">Show score</button>
+      <button class="ghost" onclick="resetQuiz()">Reset quiz</button>
+      <p id="scoreText" class="memory-line" style="display:none;"></p>
+    </section>
+
+    <p class="footer-note">Open this file in any browser. No internet needed.</p>
+  </main>
+
+  <script>
+    let bits = { A: 0, B: 0 };
+    let addBits = { A: 0, B: 0 };
+
+    function gateResult(gate, A, B) {
+      switch(gate) {
+        case 'AND': return A & B;
+        case 'OR': return A | B;
+        case 'NOT_A': return A ? 0 : 1;
+        case 'NAND': return (A & B) ? 0 : 1;
+        case 'NOR': return (A | B) ? 0 : 1;
+        case 'XOR': return A === B ? 0 : 1;
+        case 'XNOR': return A === B ? 1 : 0;
+        default: return 0;
+      }
+    }
+
+    function labelForGate(gate) {
+      const labels = {
+        AND: 'AND needs both inputs to be 1.',
+        OR: 'OR needs at least one input to be 1.',
+        NOT_A: 'NOT A ignores B and flips A.',
+        NAND: 'NAND is NOT AND. It is 0 only when both inputs are 1.',
+        NOR: 'NOR is NOT OR. It is 1 only when both inputs are 0.',
+        XOR: 'XOR is 1 when inputs are different.',
+        XNOR: 'XNOR is 1 when inputs are same.'
+      };
+      return labels[gate];
+    }
+
+    function setOutputBox(el, value) {
+      el.textContent = value;
+      el.className = 'output-box ' + (value ? 'output-1' : 'output-0');
+    }
+
+    function updateBitButton(id, value) {
+      const btn = document.getElementById(id);
+      btn.textContent = value;
+      btn.className = 'bit-btn ' + (value ? 'bit-on' : 'bit-off');
+    }
+
+    function toggleBit(which) {
+      bits[which] = bits[which] ? 0 : 1;
+      updateLab();
+    }
+
+    function updateLab() {
+      updateBitButton('btnA', bits.A);
+      updateBitButton('btnB', bits.B);
+      const gate = document.getElementById('gateSelect').value;
+      const result = gateResult(gate, bits.A, bits.B);
+      setOutputBox(document.getElementById('labOut'), result);
+      document.getElementById('labExplanation').innerHTML = `<b>${gate}</b>: ${labelForGate(gate)}<br>Current input: A = ${bits.A}, B = ${bits.B}. Output = ${result}.`;
+    }
+
+    function makeTable(id, gate, includeIntermediate=false) {
+      const rows = [[0,0],[0,1],[1,0],[1,1]];
+      let html = '<tr><th>A</th><th>B</th>';
+      if (includeIntermediate) html += '<th>AND</th>';
+      html += `<th>${gate}</th></tr>`;
+      rows.forEach(([A,B]) => {
+        const result = gateResult(gate, A, B);
+        html += `<tr><td>${A}</td><td>${B}</td>`;
+        if (includeIntermediate) html += `<td>${A & B}</td>`;
+        html += `<td class="${result ? 'highlight' : ''}">${result}</td></tr>`;
+      });
+      document.getElementById(id).innerHTML = html;
+    }
+
+    function makeNotTable() {
+      document.getElementById('notTable').innerHTML = `
+        <tr><th>A</th><th>NOT A</th></tr>
+        <tr><td>0</td><td class="highlight">1</td></tr>
+        <tr><td>1</td><td>0</td></tr>`;
+    }
+
+    function makeAllTable() {
+      const rows = [[0,0],[0,1],[1,0],[1,1]];
+      let html = '<tr><th>A</th><th>B</th><th>NOR</th><th>XOR</th><th>XNOR</th></tr>';
+      rows.forEach(([A,B]) => {
+        html += `<tr><td>${A}</td><td>${B}</td><td>${gateResult('NOR',A,B)}</td><td>${gateResult('XOR',A,B)}</td><td>${gateResult('XNOR',A,B)}</td></tr>`;
+      });
+      document.getElementById('allTable').innerHTML = html;
+    }
+
+    function toggleAdder(which) {
+      addBits[which] = addBits[which] ? 0 : 1;
+      updateAdder();
+    }
+
+    function updateAdder() {
+      updateBitButton('addA', addBits.A);
+      updateBitButton('addB', addBits.B);
+      const sum = gateResult('XOR', addBits.A, addBits.B);
+      const carry = gateResult('AND', addBits.A, addBits.B);
+      setOutputBox(document.getElementById('sumOut'), sum);
+      setOutputBox(document.getElementById('carryOut'), carry);
+      document.getElementById('adderExplanation').innerHTML = `A = ${addBits.A}, B = ${addBits.B}. SUM uses XOR, so it is ${sum}. CARRY uses AND, so it is ${carry}.`;
+    }
+
+    const quiz = [
+      { q: '0 AND 1 = ?', options: ['0','1'], answer: '0', explain: 'AND needs both inputs to be 1.' },
+      { q: '1 OR 0 = ?', options: ['0','1'], answer: '1', explain: 'OR needs at least one input to be 1.' },
+      { q: '1 NAND 1 = ?', options: ['0','1'], answer: '0', explain: 'NAND is opposite of AND. 1 AND 1 is 1, so NAND is 0.' },
+      { q: '0 NAND 0 = ?', options: ['0','1'], answer: '1', explain: '0 AND 0 is 0. Reverse it: 1.' },
+      { q: '1 XOR 1 = ?', options: ['0','1'], answer: '0', explain: 'XOR is 1 only when inputs are different.' },
+      { q: '1 XNOR 1 = ?', options: ['0','1'], answer: '1', explain: 'XNOR is 1 when inputs are same.' },
+      { q: 'Which gate is generous?', options: ['AND','OR'], answer: 'OR', explain: 'OR gives 1 if any one input is 1.' },
+      { q: 'Which gate can alone build all other gates?', options: ['NAND','XOR'], answer: 'NAND', explain: 'NAND is functionally complete.' },
+      { q: 'In a half adder, carry is made by which gate?', options: ['XOR','AND'], answer: 'AND', explain: 'Carry appears only when both bits are 1.' },
+      { q: 'In a half adder, sum is made by which gate?', options: ['XOR','OR'], answer: 'XOR', explain: 'Sum is 1 when the two bits are different.' }
+    ];
+
+    function renderQuiz() {
+      const box = document.getElementById('quizBox');
+      box.innerHTML = quiz.map((item, index) => `
+        <div class="quiz-item" id="quizItem${index}">
+          <b>${index + 1}. ${item.q}</b>
+          <div class="answers">
+            ${item.options.map(opt => `<button class="ghost" onclick="answerQuiz(${index}, '${opt}')">${opt}</button>`).join('')}
+          </div>
+          <div class="feedback" id="feedback${index}"></div>
+        </div>
+      `).join('');
+    }
+
+    const selectedAnswers = {};
+
+    function answerQuiz(index, answer) {
+      selectedAnswers[index] = answer;
+      const item = quiz[index];
+      const feedback = document.getElementById('feedback' + index);
+      if (answer === item.answer) {
+        feedback.className = 'feedback correct';
+        feedback.textContent = 'Correct. ' + item.explain;
+      } else {
+        feedback.className = 'feedback wrong';
+        feedback.textContent = 'Not quite. ' + item.explain;
+      }
+    }
+
+    function scoreQuiz() {
+      let score = 0;
+      quiz.forEach((item, index) => {
+        if (selectedAnswers[index] === item.answer) score++;
+      });
+      const txt = document.getElementById('scoreText');
+      txt.style.display = 'block';
+      txt.textContent = `Your score: ${score} / ${quiz.length}`;
+    }
+
+    function resetQuiz() {
+      Object.keys(selectedAnswers).forEach(k => delete selectedAnswers[k]);
+      renderQuiz();
+      document.getElementById('scoreText').style.display = 'none';
+    }
+
+    makeTable('andTable', 'AND');
+    makeTable('orTable', 'OR');
+    makeNotTable();
+    makeTable('nandTable', 'NAND', true);
+    makeAllTable();
+    updateLab();
+    updateAdder();
+    renderQuiz();
+  </script>
+</body>
+</html>
